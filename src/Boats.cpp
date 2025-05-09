@@ -12,8 +12,8 @@ void Gameplay::populateUserBoard()
     std::cin >> inputRow >> inputColumn;
 
     if (inputRow == 'k') return;
-    if (user_board.getVal(coord_t(inputRow, inputColumn)) != fieldState_t::EMPTY) throw std::invalid_argument("Invalid field provided");
-    user_board.setVal(coord_t(inputRow, inputColumn),fieldState_t::BOARD);
+    if (user_board.getVal(user_coord_t(inputRow, inputColumn)) != fieldState_t::EMPTY) throw std::invalid_argument("Invalid field provided");
+    user_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOARD);
 }
 
 void Gameplay::populateComputerBoard()
@@ -25,7 +25,7 @@ std::ostream & operator<<(std::ostream &os, const Board& board)
 {
     char rowName = 'A';
     os << "_|_1_|_2_|_3_|_4_|_5_|_6_|_7_|_8_|_9_|_10|" << std::endl;
-    for (std::array<fieldState_t,SIZE> row : board.playgroud)
+    for (std::array<fieldState_t,BOARD_SIZE> row : board.playgroud)
     {
         os << rowName++ << "|";
         for (fieldState_t field : row)
@@ -35,4 +35,17 @@ std::ostream & operator<<(std::ostream &os, const Board& board)
         os << std::endl;
     }
     return os;
+}
+
+std::vector<Boat> BoatGenerator::generate(int boatSize)
+{
+    std::vector<Boat> possibleBoats;
+    // horizontal
+    for(int row = 0; row < BOARD_SIZE; row++)
+    {
+        for(int column = 0; column < BOARD_SIZE - boatSize + 1; column++)
+        {
+            possibleBoats.push_back(...tupisac dalej);
+        }
+    }
 }
