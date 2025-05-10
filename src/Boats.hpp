@@ -23,6 +23,8 @@ constexpr int BOARD_SIZE = 10;
 
 #define FROM_USER_NUM_TO_INDEX(val) val-1
 
+#define IS_VALID_FIELD(row,column) (row < 0 || row >= BOARD_SIZE || column < 0 || column >= BOARD_SIZE)
+
 // *_coord_t.first() -> row A, B, C ... / 0, 1, 2...
 // *_coord_t.second() -> column 1, 2, 3... / 0, 1, 2...
 using user_coord_t = std::pair<char,int>;
@@ -61,7 +63,13 @@ class Boat
 public:
     Boat(index_coord_t argBeginCoord,
          index_coord_t argEndCoord):
-        begin_coord(argBeginCoord), end_coord(argEndCoord) {}
+        begin_coord(argBeginCoord), end_coord(argEndCoord)
+    {
+        if(!IS_VALID_FIELD(argBeginCoord.first, argBeginCoord.second) || !IS_VALID_FIELD(argEndCoord.first, argEndCoord.second))
+        {
+            throw std::invalid_argument("Invalid field provided");
+        }
+    }
     Boat() = delete;
 private:
     index_coord_t begin_coord;

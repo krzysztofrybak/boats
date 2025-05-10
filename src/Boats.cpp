@@ -1,5 +1,9 @@
 #include "src/Boats.hpp"
+
 #include <stdexcept>
+#include <random>
+#include <iterator>
+#include <algorithm>
 
 void Gameplay::populateUserBoard()
 {
@@ -18,7 +22,19 @@ void Gameplay::populateUserBoard()
 
 void Gameplay::populateComputerBoard()
 {
+    BoatGenerator allBoatsGen;
+    std::vector<Boat> allBoats_4 = allBoatsGen.generate(4);
+    std::vector<Boat> allBoats_3 = allBoatsGen.generate(3);
+    std::vector<Boat> allBoats_2 = allBoatsGen.generate(2);
+    std::vector<Boat> allBoats_1 = allBoatsGen.generate(1);
 
+    std::vector<Boat> sampleBoats;
+    std::sample(allBoats_4.begin(), allBoats_4.end(), std::back_inserter(sampleBoats), 1, std::mt19937 {std::random_device{}()});
+    std::sample(allBoats_3.begin(), allBoats_3.end(), std::back_inserter(sampleBoats), 2, std::mt19937 {std::random_device{}()});
+    std::sample(allBoats_2.begin(), allBoats_2.end(), std::back_inserter(sampleBoats), 3, std::mt19937 {std::random_device{}()});
+    std::sample(allBoats_1.begin(), allBoats_1.end(), std::back_inserter(sampleBoats), 4, std::mt19937 {std::random_device{}()});
+
+tu pisac dalej...
 }
 
 std::ostream & operator<<(std::ostream &os, const Board& board)
@@ -40,12 +56,19 @@ std::ostream & operator<<(std::ostream &os, const Board& board)
 std::vector<Boat> BoatGenerator::generate(int boatSize)
 {
     std::vector<Boat> possibleBoats;
-    // horizontal
+
     for(int row = 0; row < BOARD_SIZE; row++)
     {
         for(int column = 0; column < BOARD_SIZE - boatSize + 1; column++)
         {
-            possibleBoats.push_back(...tupisac dalej);
+            // horizontal
+            possibleBoats.push_back(Boat((row,column),(row,column+boatSize)));
+            if (boatSize != 1)
+            {
+                // vertical
+                possibleBoats.push_back(Boat((column,row),(column+boatSize,row)));
+            }
         }
     }
+    return possibleBoats;
 }
