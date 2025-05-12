@@ -14,10 +14,24 @@
 enum class fieldState_t : char{
     UNKNOWN = '_',
     EMPTY = 'o',
-    BOARD = 'x'
+    BOAT = 'x'
+};
+
+enum class direction_t : char{
+    VERTICAL,
+    HORIZONTAL
+};
+
+enum class result_t : char{
+    HIT_CONTINUE,
+    HTI_DONE,
+    MISHIT,
+    ENDGAME
 };
 
 constexpr int BOARD_SIZE = 10;
+
+constexpr int ALL_HITS = 20;
 
 #define FROM_USER_CHAR_TO_INDEX(ch) ch-65
 
@@ -38,6 +52,11 @@ public:
         return playgroud.at(FROM_USER_CHAR_TO_INDEX(coord.first)).at(FROM_USER_NUM_TO_INDEX(coord.second));
     }
 
+    void setVal(index_coord_t coord, fieldState_t value)
+    {
+        playgroud.at(coord.first.at(coord.second)) = value;
+    }
+
     void setVal(user_coord_t coord, fieldState_t value)
     {
         playgroud.at(FROM_USER_CHAR_TO_INDEX(coord.first)).at(FROM_USER_NUM_TO_INDEX(coord.second)) = value;
@@ -53,9 +72,15 @@ class Gameplay
 public:
     void populateUserBoard();
     void populateComputerBoard();
+    result_t userMove();
 private:
     Board user_board;
     Board computer_board;
+    Board user_hit_board;       // user hits here
+    Board computer_hit_board;   // computer hits here
+
+    int userHits = 0;
+    int computerHits = 0;
 };
 
 class Boat
@@ -71,7 +96,10 @@ public:
         }
     }
     Boat() = delete;
-private:
+
+    int size();
+    direction_t direction();
+
     index_coord_t begin_coord;
     index_coord_t end_coord;
 };
