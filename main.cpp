@@ -8,10 +8,31 @@ int main(){
     bool userWin = false;
     bool computerWin = false;
 
-    while(!(userWin || computerWin))
+    result_t moveResult = result_t::MISHIT;
+
+    while(true)
     {
-        userWin = game.userMove();
-        computerWin = game.computerMove();
+        do
+        {
+            moveResult = game.userMove();
+            if (moveResult == result_t::ENDGAME)
+            {
+                std:::cout << "Congratulations to user" << std::endl;
+                return;
+            }
+        }
+        while(moveResult == result_t::HIT_CONTINUE);
+
+        do
+        {
+            moveResult = game.computerMove();
+            if (moveResult == result_t::ENDGAME)
+            {
+                std:::cout << "Congratulations to computer" << std::endl;
+                return;
+            }
+        }
+        while(moveResult == result_t::HIT_CONTINUE);
+
     }
-    std:::cout << "Congratulation " << (userWin? "user" : "computer") << std::endl;
 }

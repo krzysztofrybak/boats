@@ -5,6 +5,9 @@
 #include <iterator>
 #include <algorithm>
 
+#include <stdlib.h>
+#include <time.h>
+
 int Boat::size()
 {
     int size = abs(begin_coord.first - end_coord.first) + abs(begin_coord.second - end_coord.second);
@@ -108,20 +111,8 @@ result_t Gameplay::userMove()
     int inputColumn = 0;
     static int totalUserHits = 0;
 
-    while(true)
-    {
-        std::cout << "Podaj pole do trafienia..." << std::endl;
-        std::cin >> inputRow >> inputColumn;
-
-        if (user_hit_board.getVal(user_coord_t(inputRow, inputColumn)) != fieldState_t::EMPTY)
-        {
-            std::cout << "Pole zajete... Jeszcze raz" << std::endl;
-        }
-        else
-        {
-            break;
-        }
-    }
+    std::cout << "Podaj pole do trafienia..." << std::endl;
+    std::cin >> inputRow >> inputColumn;
 
     // pudlo
     if (computer_board.getVal(user_coord_t(inputRow, inputColumn)) == fieldState_t::EMPTY)
@@ -134,8 +125,84 @@ result_t Gameplay::userMove()
     user_hit_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
     if(++totalUserHits == ALL_HITS) return result_t::ENDGAME;
 
-    // plynie dalej
-tu pisac dalej....
+    // plynie dalej - sprawdz sasiednie
+    if (
+        // nad
+        (FROM_USER_CHAR_TO_INDEX(inputRow) > 0 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
+        ) ||
+        // pod
+        (FROM_USER_CHAR_TO_INDEX(inputRow) < SIZE-1 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
+        ) ||
+        // z lewej
+        (FROM_USER_NUM_TO_INDEX(inputCol) > 0 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::UNKNOWN
+        ) ||
+        // z prawej
+        (FROM_USER_NUM_TO_INDEX(inputCol) < SIZE-1 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::UNKNOWN
+        )
+        )
+    {
+        return result_t::HIT_CONTINUE;
+    }
+
+    return result_t::HIT_DONE;
+}
+
+result_t Gameplay::computerMove()
+{
+    srand (time(NULL));
+
+    int row = rand() % 10;
+    int column = rand() % 10;
+    static int totalComputerHits = 0;
+
+    ...tu pisac dalej...
+    // pudlo
+    if (computer_board.getVal(user_coord_t(inputRow, inputColumn)) == fieldState_t::EMPTY)
+    {
+        user_hit_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::EMPTY);
+        return result_t::MISHIT;
+    }
+
+    // trafiony
+    user_hit_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
+    if(++totalUserHits == ALL_HITS) return result_t::ENDGAME;
+
+    // plynie dalej - sprawdz sasiednie
+    if (
+        // nad
+        (FROM_USER_CHAR_TO_INDEX(inputRow) > 0 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
+        ) ||
+        // pod
+        (FROM_USER_CHAR_TO_INDEX(inputRow) < SIZE-1 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
+        ) ||
+        // z lewej
+        (FROM_USER_NUM_TO_INDEX(inputCol) > 0 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::UNKNOWN
+        ) ||
+        // z prawej
+        (FROM_USER_NUM_TO_INDEX(inputCol) < SIZE-1 &&
+         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::BOAT &&
+         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::UNKNOWN
+        )
+        )
+    {
+        return result_t::HIT_CONTINUE;
+    }
+
+    return result_t::HIT_DONE;
 }
 
 std::ostream & operator<<(std::ostream &os, const Board& board)

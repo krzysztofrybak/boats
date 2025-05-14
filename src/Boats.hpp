@@ -24,7 +24,7 @@ enum class direction_t : char{
 
 enum class result_t : char{
     HIT_CONTINUE,
-    HTI_DONE,
+    HIT_DONE,
     MISHIT,
     ENDGAME
 };
@@ -73,6 +73,7 @@ public:
     void populateUserBoard();
     void populateComputerBoard();
     result_t userMove();
+    result_t computerMove();
 private:
     Board user_board;
     Board computer_board;
