@@ -47,6 +47,10 @@ using index_coord_t = std::pair<int,int>;
 class Board
 {
 public:
+    fieldState_t getVal(index_coord_t coord)
+    {
+        return playgroud.at(coord.first).at(coord.second);
+    }
     fieldState_t getVal(user_coord_t coord)
     {
         return playgroud.at(FROM_USER_CHAR_TO_INDEX(coord.first)).at(FROM_USER_NUM_TO_INDEX(coord.second));

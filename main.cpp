@@ -33,6 +33,5 @@ int main(){
             }
         }
         while(moveResult == result_t::HIT_CONTINUE);
-
     }
 }

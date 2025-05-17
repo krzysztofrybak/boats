@@ -159,43 +159,51 @@ result_t Gameplay::computerMove()
 {
     srand (time(NULL));
 
-    int row = rand() % 10;
-    int column = rand() % 10;
+    int indexRow = 0;
+    int indexColumn = 0;
+
     static int totalComputerHits = 0;
 
-    ...tu pisac dalej...
-    // pudlo
-    if (computer_board.getVal(user_coord_t(inputRow, inputColumn)) == fieldState_t::EMPTY)
+    do
     {
-        user_hit_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::EMPTY);
+        indexRow = 0; = rand() % 10;
+        indexColumn = 0; = rand() % 10;
+    }
+    while (computer_hit_board.getVal(index_coord_t(indexRow, indexColumn)) == fieldState_t::UNKNOWN);
+
+
+    // pudlo
+    if (user_board.getVal(index_coord_t(indexRow, indexColumn)) == fieldState_t::EMPTY)
+    {
+        computer_hit_board.setVal(index_coord_t(indexRow, indexColumn),fieldState_t::EMPTY);
         return result_t::MISHIT;
     }
 
     // trafiony
-    user_hit_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
-    if(++totalUserHits == ALL_HITS) return result_t::ENDGAME;
+    computer_hit_board.setVal(index_coord_t(indexRow, indexColumn),fieldState_t::BOAT);
+    if(++totalComputerHits == ALL_HITS) return result_t::ENDGAME;
 
     // plynie dalej - sprawdz sasiednie
     if (
         // nad
-        (FROM_USER_CHAR_TO_INDEX(inputRow) > 0 &&
-         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
-         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
+        (indexRow > 0 &&
+         user_board.getVal(index_coord_t(indexRow-1, indexColumn)) == fieldState_t::BOAT &&
+         computer_hit_board.getVal(index_coord_t(indexRow-1, indexColumn)) == fieldState_t::UNKNOWN
         ) ||
         // pod
-        (FROM_USER_CHAR_TO_INDEX(inputRow) < SIZE-1 &&
-         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
-         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
+        (indexRow < SIZE-1 &&
+         user_board.getVal(index_coord_t(indexRow+1, indexColumn)) == fieldState_t::BOAT &&
+         computer_hit_board.getVal(index_coord_t(indexRow+1, indexColumn)) == fieldState_t::UNKNOWN
         ) ||
         // z lewej
-        (FROM_USER_NUM_TO_INDEX(inputCol) > 0 &&
-         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::BOAT &&
-         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::UNKNOWN
+        (indexColumn > 0 &&
+         user_board.getVal(index_coord_t(indexRow, indexColumn-1)) == fieldState_t::BOAT &&
+         computer_hit_board.getVal(index_coord_t(indexRow, indexColumn-1)) == fieldState_t::UNKNOWN
         ) ||
         // z prawej
-        (FROM_USER_NUM_TO_INDEX(inputCol) < SIZE-1 &&
-         computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::BOAT &&
-         user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::UNKNOWN
+        (indexColumn < SIZE-1 &&
+         user_board.getVal(index_coord_t(indexRow, indexColumn+1)) == fieldState_t::BOAT &&
+         computer_hit_board.getVal(index_coord_t(indexRow, indexColumn+1)) == fieldState_t::UNKNOWN
         )
         )
     {
