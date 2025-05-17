@@ -58,7 +58,7 @@ public:
 
     void setVal(index_coord_t coord, fieldState_t value)
     {
-        playgroud.at(coord.first.at(coord.second)) = value;
+        playgroud.at(coord.first).at(coord.second) = value;
     }
 
     void setVal(user_coord_t coord, fieldState_t value)

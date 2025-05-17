@@ -5,9 +5,6 @@ int main(){
     game.populateUserBoard();
     game.populateComputerBoard();
 
-    bool userWin = false;
-    bool computerWin = false;
-
     result_t moveResult = result_t::MISHIT;
 
     while(true)

@@ -133,17 +133,17 @@ result_t Gameplay::userMove()
          user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)-1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
         ) ||
         // pod
-        (FROM_USER_CHAR_TO_INDEX(inputRow) < SIZE-1 &&
+        (FROM_USER_CHAR_TO_INDEX(inputRow) < BOARD_SIZE-1 &&
          computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::BOAT &&
          user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow)+1, FROM_USER_NUM_TO_INDEX(inputColumn))) == fieldState_t::UNKNOWN
         ) ||
         // z lewej
-        (FROM_USER_NUM_TO_INDEX(inputCol) > 0 &&
+        (FROM_USER_NUM_TO_INDEX(inputColumn) > 0 &&
          computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::BOAT &&
          user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)-1)) == fieldState_t::UNKNOWN
         ) ||
         // z prawej
-        (FROM_USER_NUM_TO_INDEX(inputCol) < SIZE-1 &&
+        (FROM_USER_NUM_TO_INDEX(inputColumn) < BOARD_SIZE-1 &&
          computer_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::BOAT &&
          user_hit_board.getVal(index_coord_t(FROM_USER_CHAR_TO_INDEX(inputRow), FROM_USER_NUM_TO_INDEX(inputColumn)+1)) == fieldState_t::UNKNOWN
         )
@@ -166,8 +166,8 @@ result_t Gameplay::computerMove()
 
     do
     {
-        indexRow = 0; = rand() % 10;
-        indexColumn = 0; = rand() % 10;
+        indexRow = rand() % 10;
+        indexColumn = rand() % 10;
     }
     while (computer_hit_board.getVal(index_coord_t(indexRow, indexColumn)) == fieldState_t::UNKNOWN);
 
@@ -191,7 +191,7 @@ result_t Gameplay::computerMove()
          computer_hit_board.getVal(index_coord_t(indexRow-1, indexColumn)) == fieldState_t::UNKNOWN
         ) ||
         // pod
-        (indexRow < SIZE-1 &&
+        (indexRow < BOARD_SIZE-1 &&
          user_board.getVal(index_coord_t(indexRow+1, indexColumn)) == fieldState_t::BOAT &&
          computer_hit_board.getVal(index_coord_t(indexRow+1, indexColumn)) == fieldState_t::UNKNOWN
         ) ||
@@ -201,7 +201,7 @@ result_t Gameplay::computerMove()
          computer_hit_board.getVal(index_coord_t(indexRow, indexColumn-1)) == fieldState_t::UNKNOWN
         ) ||
         // z prawej
-        (indexColumn < SIZE-1 &&
+        (indexColumn < BOARD_SIZE-1 &&
          user_board.getVal(index_coord_t(indexRow, indexColumn+1)) == fieldState_t::BOAT &&
          computer_hit_board.getVal(index_coord_t(indexRow, indexColumn+1)) == fieldState_t::UNKNOWN
         )

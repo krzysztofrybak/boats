@@ -1,3 +1,5 @@
+set (CMAKE_CXX_STANDARD 17)
+
 ADD_LIBRARY( GameLibs STATIC
              src/Boats.cpp )
 
