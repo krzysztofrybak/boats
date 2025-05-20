@@ -238,11 +238,11 @@ std::vector<Boat> BoatGenerator::generate(int boatSize)
         for(int column = 0; column < BOARD_SIZE - boatSize + 1; column++)
         {
             // horizontal
-            possibleBoats.push_back(Boat((row,column),(row,column+boatSize)));
+            possibleBoats.push_back(Boat(index_coord_t(row,column),index_coord_t(row,column+boatSize)));
             if (boatSize != 1)
             {
                 // vertical
-                possibleBoats.push_back(Boat((column,row),(column+boatSize,row)));
+                possibleBoats.push_back(Boat(index_coord_t(column,row),index_coord_t(column+boatSize,row)));
             }
         }
     }
