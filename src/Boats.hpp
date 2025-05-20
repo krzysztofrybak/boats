@@ -14,8 +14,8 @@
  */
 enum class fieldState_t : char{
     UNKNOWN = '_',
-    EMPTY = 'o',
-    BOAT = 'x'
+    EMPTY = '.',
+    BOAT = 'X'
 };
 
 enum class direction_t : char{
@@ -50,7 +50,7 @@ class Board
 public:
     Board(bool isHitBoard)
     {
-        for (auto row: playgroud) row.fill(isHitBoard ? fieldState_t::UNKNOWN : fieldState_t::EMPTY);
+        for (auto& row: playgroud) row.fill(isHitBoard ? fieldState_t::UNKNOWN : fieldState_t::EMPTY);
     }
     fieldState_t getVal(index_coord_t coord)
     {
