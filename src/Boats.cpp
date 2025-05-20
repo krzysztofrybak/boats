@@ -26,15 +26,20 @@ void Gameplay::populateUserBoard()
     char inputRow = 0;
     int inputColumn = 0;
 
-    system("clear");
-    std::cout << user_board << std::endl;
-    std::cout << "Podaj pole...    (Nacisnij 'k' aby zakonczyc)" << std::endl;
-    std::cin >> inputRow >> inputColumn;
+    while(true)
+    {
+        system("clear");
+        std::cout << user_board << std::endl;
+        std::cout << "Podaj pole...    (Nacisnij 'k' aby zakonczyc)" << std::endl;
+        std::cin >> inputRow >> inputColumn;
 
-    if (inputRow == 'k') return;
-    if (user_board.getVal(user_coord_t(inputRow, inputColumn)) != fieldState_t::EMPTY) throw std::invalid_argument("Invalid field provided");
+        logFile << "Podano:" << inputRow << inputColumn << std::endl;
+        if (inputRow == 'k') break;
+        if (user_board.getVal(user_coord_t(inputRow, inputColumn)) != fieldState_t::EMPTY) break;
 
-    user_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
+        user_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
+    }
+    logFile << "Plansza usera:" << user_board << std::endl;
 }
 
 bool isCoordinateConflict(index_coord_t coordA, index_coord_t coordB)
@@ -59,21 +64,38 @@ void Gameplay::populateComputerBoard()
     std::vector<Boat> allBoats_1 = allBoatsGen.generate(1);
 
     std::vector<Boat> randomBoatLayout;
+    bool isLayoutOk = false;
 
     while(true)
     {
         randomBoatLayout.clear();
+        isLayoutOk = true;
 
         std::sample(allBoats_4.begin(), allBoats_4.end(), std::back_inserter(randomBoatLayout), 1, std::mt19937 {std::random_device{}()});
         std::sample(allBoats_3.begin(), allBoats_3.end(), std::back_inserter(randomBoatLayout), 2, std::mt19937 {std::random_device{}()});
         std::sample(allBoats_2.begin(), allBoats_2.end(), std::back_inserter(randomBoatLayout), 3, std::mt19937 {std::random_device{}()});
         std::sample(allBoats_1.begin(), allBoats_1.end(), std::back_inserter(randomBoatLayout), 4, std::mt19937 {std::random_device{}()});
 
+        logFile << "Generated layout" << std::endl;
+        for (auto boat : randomBoatLayout) logFile << boat << std::endl;
+
         for(int boatIndex = 0; boatIndex < randomBoatLayout.size()-1; boatIndex++)
         {
-            if(isBoatConflict(randomBoatLayout.at(boatIndex), randomBoatLayout.at(boatIndex+1))) continue;
+            if(isBoatConflict(randomBoatLayout.at(boatIndex), randomBoatLayout.at(boatIndex+1)))
+            {
+                logFile << "Conflict:" << std::endl;
+                logFile << randomBoatLayout.at(boatIndex) << std::endl;
+                logFile << randomBoatLayout.at(boatIndex+1) << std::endl;
+                isLayoutOk = false;
+                break;
+            }
         }
+        if (isLayoutOk == true) break;
     }
+
+    logFile << "Computer layout" << std::endl;
+    for (auto boat : randomBoatLayout) logFile << boat << std::endl;
+
 
     for (auto& boat : randomBoatLayout)
     {
@@ -103,6 +125,8 @@ void Gameplay::populateComputerBoard()
             }
         }
     }
+    logFile << "Initial computer board" << std::endl;
+    logFile << computer_board << std::endl;
 }
 
 result_t Gameplay::userMove()
@@ -113,6 +137,8 @@ result_t Gameplay::userMove()
 
     std::cout << "Podaj pole do trafienia..." << std::endl;
     std::cin >> inputRow >> inputColumn;
+
+    logFile << "User move: " << inputRow << inputColumn << std::endl;
 
     // pudlo
     if (computer_board.getVal(user_coord_t(inputRow, inputColumn)) == fieldState_t::EMPTY)
@@ -171,6 +197,7 @@ result_t Gameplay::computerMove()
     }
     while (computer_hit_board.getVal(index_coord_t(indexRow, indexColumn)) == fieldState_t::UNKNOWN);
 
+    logFile << "Computer move:" << indexRow << " " << indexColumn << std::endl;
 
     // pudlo
     if (user_board.getVal(index_coord_t(indexRow, indexColumn)) == fieldState_t::EMPTY)
@@ -226,6 +253,12 @@ std::ostream & operator<<(std::ostream &os, const Board& board)
         }
         os << std::endl;
     }
+    return os;
+}
+
+std::ostream & operator<<(std::ostream &os, const Boat& boat)
+{
+    os << "Peak begin:[" << boat.begin_coord.first << "][" << boat.begin_coord.second << "] end:[" << boat.end_coord.first << "][" << boat.end_coord.second << "]";
     return os;
 }
 

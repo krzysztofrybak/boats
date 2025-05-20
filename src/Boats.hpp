@@ -3,6 +3,7 @@
 #include <array>
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 /*
  *  _|_1_|_2_|_3_|...
@@ -74,11 +75,12 @@ private:
 class Gameplay
 {
 public:
+    Gameplay(std::ofstream &log): logFile(log) {};
     void populateUserBoard();
     void populateComputerBoard();
     result_t userMove();
     result_t computerMove();
-private:
+public:
     Board user_board;
     Board computer_board;
     Board user_hit_board;       // user hits here
@@ -86,6 +88,7 @@ private:
 
     int userHits = 0;
     int computerHits = 0;
+    std::ofstream &logFile;
 };
 
 class Boat
@@ -107,6 +110,8 @@ public:
 
     index_coord_t begin_coord;
     index_coord_t end_coord;
+
+    friend std::ostream & operator<<(std::ostream &os, const Boat& boat);
 };
 
 class BoatGenerator

@@ -1,7 +1,12 @@
 #include "src/Boats.hpp"
 
 int main(){
-    Gameplay game;
+
+    std::ofstream logFile("log.txt");
+
+    Gameplay game(logFile);
+
+    logFile << "Populate user board" << std::endl;
     game.populateUserBoard();
     game.populateComputerBoard();
 
@@ -11,21 +16,34 @@ int main(){
     {
         do
         {
+            logFile << "User board:\n" << game.user_board << std::endl;
+            logFile << "User hit board:\n" << game.user_hit_board << std::endl;
+            logFile << "Computer board:\n" << game.computer_board << std::endl;
+            logFile << "Computer hit board:\n" << game.computer_hit_board << std::endl;
+
             moveResult = game.userMove();
             if (moveResult == result_t::ENDGAME)
             {
                 std::cout << "Congratulations to user" << std::endl;
+                logFile.close();
                 return 0;
-            }
+            } else
+            if(moveResult == result_t::HIT_CONTINUE) std::cout << "Trafiony plynie dalej..." << std::endl;
         }
         while(moveResult == result_t::HIT_CONTINUE);
 
         do
         {
+            logFile << "User board:\n" << game.user_board << std::endl;
+            logFile << "User hit board:\n" << game.user_hit_board << std::endl;
+            logFile << "Computer board:\n" << game.computer_board << std::endl;
+            logFile << "Computer hit board:\n" << game.computer_hit_board << std::endl;
+
             moveResult = game.computerMove();
             if (moveResult == result_t::ENDGAME)
             {
                 std::cout << "Congratulations to computer" << std::endl;
+                logFile.close();
                 return 0;
             }
         }
