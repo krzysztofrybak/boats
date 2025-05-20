@@ -48,6 +48,10 @@ using index_coord_t = std::pair<int,int>;
 class Board
 {
 public:
+    Board(bool isHitBoard)
+    {
+        for (auto row: playgroud) row.fill(isHitBoard ? fieldState_t::UNKNOWN : fieldState_t::EMPTY);
+    }
     fieldState_t getVal(index_coord_t coord)
     {
         return playgroud.at(coord.first).at(coord.second);
@@ -75,16 +79,16 @@ private:
 class Gameplay
 {
 public:
-    Gameplay(std::ofstream &log): logFile(log) {};
+    Gameplay(std::ofstream &log): logFile(log) {}
     void populateUserBoard();
     void populateComputerBoard();
     result_t userMove();
     result_t computerMove();
 public:
-    Board user_board;
-    Board computer_board;
-    Board user_hit_board;       // user hits here
-    Board computer_hit_board;   // computer hits here
+    Board user_board{false};
+    Board computer_board{false};
+    Board user_hit_board{true};
+    Board computer_hit_board{true};
 
     int userHits = 0;
     int computerHits = 0;

@@ -28,14 +28,12 @@ void Gameplay::populateUserBoard()
 
     while(true)
     {
-        system("clear");
         std::cout << user_board << std::endl;
         std::cout << "Podaj pole...    (Nacisnij 'k' aby zakonczyc)" << std::endl;
         std::cin >> inputRow >> inputColumn;
 
         logFile << "Podano:" << inputRow << inputColumn << std::endl;
         if (inputRow == 'k') break;
-        if (user_board.getVal(user_coord_t(inputRow, inputColumn)) != fieldState_t::EMPTY) break;
 
         user_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
     }
