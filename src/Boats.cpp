@@ -28,16 +28,18 @@ void Gameplay::populateUserBoard()
 
     while(true)
     {
+        system("clear");
         std::cout << user_board << std::endl;
         std::cout << "Podaj pole...    (Nacisnij 'k' aby zakonczyc)" << std::endl;
-        std::cin >> inputRow >> inputColumn;
+        std::cin >> inputRow;
+        if (inputRow == 'k') break;
+        std::cin >> inputColumn;
 
         logFile << "Podano:" << inputRow << inputColumn << std::endl;
-        if (inputRow == 'k') break;
-
         user_board.setVal(user_coord_t(inputRow, inputColumn),fieldState_t::BOAT);
     }
-    logFile << "Plansza usera:" << user_board << std::endl;
+    system("clear");
+    logFile << "Plansza usera:\n" << user_board << std::endl;
 }
 
 bool isCoordinateConflict(index_coord_t coordA, index_coord_t coordB)
@@ -60,6 +62,8 @@ void Gameplay::populateComputerBoard()
     std::vector<Boat> allBoats_3 = allBoatsGen.generate(3);
     std::vector<Boat> allBoats_2 = allBoatsGen.generate(2);
     std::vector<Boat> allBoats_1 = allBoatsGen.generate(1);
+
+    logFile << "All boats generated in the generator." << std::endl;
 
     std::vector<Boat> randomBoatLayout;
     bool isLayoutOk = false;
@@ -269,11 +273,11 @@ std::vector<Boat> BoatGenerator::generate(int boatSize)
         for(int column = 0; column < BOARD_SIZE - boatSize + 1; column++)
         {
             // horizontal
-            possibleBoats.push_back(Boat(index_coord_t(row,column),index_coord_t(row,column+boatSize)));
+            possibleBoats.push_back(Boat(index_coord_t(row,column),index_coord_t(row,column+boatSize-1)));
             if (boatSize != 1)
             {
                 // vertical
-                possibleBoats.push_back(Boat(index_coord_t(column,row),index_coord_t(column+boatSize,row)));
+                possibleBoats.push_back(Boat(index_coord_t(column,row),index_coord_t(column+boatSize-1,row)));
             }
         }
     }

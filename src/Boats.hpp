@@ -38,7 +38,7 @@ constexpr int ALL_HITS = 20;
 
 #define FROM_USER_NUM_TO_INDEX(val) val-1
 
-#define IS_VALID_FIELD(row,column) (row < 0 || row >= BOARD_SIZE || column < 0 || column >= BOARD_SIZE)
+#define IS_VALID_FIELD(row,column) (row >= 0 && row < BOARD_SIZE && column >= 0 && column < BOARD_SIZE)
 
 // *_coord_t.first() -> row A, B, C ... / 0, 1, 2...
 // *_coord_t.second() -> column 1, 2, 3... / 0, 1, 2...
