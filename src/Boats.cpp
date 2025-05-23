@@ -44,7 +44,14 @@ void Gameplay::populateUserBoard()
 
 bool isCoordinateConflict(index_coord_t coordA, index_coord_t coordB)
 {
-    return (abs(coordA.first - coordB.first) <= 1 ) || (abs(coordA.second - coordB.second) <= 1 );
+    int distance_row = abs(coordA.first - coordB.first);
+    int distance_column = abs(coordA.second - coordB.second);
+
+    if (distance_row == 0 && distance_column <= 1) return true;
+    else if (distance_row <= 1 && distance_column == 0) return true;
+    else if(distance_row == 1 && distance_column == 1) return true;
+
+    return false;
 }
 
 bool isBoatConflict(Boat boatA, Boat boatB)
@@ -78,19 +85,24 @@ void Gameplay::populateComputerBoard()
         std::sample(allBoats_2.begin(), allBoats_2.end(), std::back_inserter(randomBoatLayout), 3, std::mt19937 {std::random_device{}()});
         std::sample(allBoats_1.begin(), allBoats_1.end(), std::back_inserter(randomBoatLayout), 4, std::mt19937 {std::random_device{}()});
 
-        logFile << "Generated layout" << std::endl;
+        logFile << "Random layout" << std::endl;
         for (auto boat : randomBoatLayout) logFile << boat << std::endl;
 
         for(int boatIndex = 0; boatIndex < randomBoatLayout.size()-1; boatIndex++)
         {
-            if(isBoatConflict(randomBoatLayout.at(boatIndex), randomBoatLayout.at(boatIndex+1)))
+            for(int boatIndexComp = boatIndex+1; boatIndexComp < randomBoatLayout.size(); boatIndexComp++)
             {
-                logFile << "Conflict:" << std::endl;
+                logFile << "Comparing["<< boatIndex <<"]" << "[" << boatIndexComp << "]" << std::endl;
                 logFile << randomBoatLayout.at(boatIndex) << std::endl;
-                logFile << randomBoatLayout.at(boatIndex+1) << std::endl;
-                isLayoutOk = false;
-                break;
+                logFile << randomBoatLayout.at(boatIndexComp) << std::endl;
+                if(isBoatConflict(randomBoatLayout.at(boatIndex), randomBoatLayout.at(boatIndexComp)))
+                {
+                    logFile << "Conflict." << std::endl;
+                    isLayoutOk = false;
+                    break;
+                }
             }
+            if (isLayoutOk == false) break;
         }
         if (isLayoutOk == true) break;
     }
@@ -137,11 +149,24 @@ result_t Gameplay::userMove()
     int inputColumn = 0;
     static int totalUserHits = 0;
 
-    std::cout << "Podaj pole do trafienia..." << std::endl;
-    std::cin >> inputRow >> inputColumn;
+    while(true)
+    {
+        std::cout << user_hit_board << std::endl;
+        std::cout << "Podaj pole do trafienia...(mala litera oznacz pudlo)" << std::endl;
+        std::cin >> inputRow >> inputColumn;
+
+        if (inputRow <= 'j' && inputRow >= 'a')
+        {
+            user_hit_board.setVal(user_coord_t(inputRow-32, inputColumn),fieldState_t::EMPTY);
+            logFile << "User move miss-hit: " << inputRow << inputColumn << std::endl;
+        }
+        else
+        {
+            break;
+        }
+    }
 
     logFile << "User move: " << inputRow << inputColumn << std::endl;
-
     // pudlo
     if (computer_board.getVal(user_coord_t(inputRow, inputColumn)) == fieldState_t::EMPTY)
     {
@@ -197,7 +222,7 @@ result_t Gameplay::computerMove()
         indexRow = rand() % 10;
         indexColumn = rand() % 10;
     }
-    while (computer_hit_board.getVal(index_coord_t(indexRow, indexColumn)) == fieldState_t::UNKNOWN);
+    while (computer_hit_board.getVal(index_coord_t(indexRow, indexColumn)) != fieldState_t::UNKNOWN);
 
     logFile << "Computer move:" << indexRow << " " << indexColumn << std::endl;
 
